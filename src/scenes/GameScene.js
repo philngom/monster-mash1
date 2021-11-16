@@ -11,6 +11,7 @@ export default class GameScene extends Phaser.Scene {
         // this.load.image('ground', 'assets/ground.png')
         this.load.image("platform", "assets/platform.png");
         this.load.image("bomb", "assets/bomb.png");
+        this.load.image("coin", "assets/star.png");
 
         this.load.spritesheet("onion", "assets/onion.png", {
             frameWidth: 32,
@@ -21,18 +22,21 @@ export default class GameScene extends Phaser.Scene {
         this.add.image(400, 300, "sky");
         const platforms = this.createPlatforms();
         this.player = this.createPlayer();
+        const coin = this.createCoin();
         this.bombSpawner = new BombSpawner(this, "bomb");
         const bombGroup = this.bombSpawner.group;
         this.physics.add.collider(this.player, platforms);
         this.physics.add.collider(bombGroup, platforms);
+        this.physics.add.overlap(this.player, coin, this.collectCoin, null, this);
+        this.physics.add.collider(coin, platforms)
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.time.addEvent({
-            delay: 3000,
-            callback: this.bombSpawner.spawn(),
-            callbackScope: this,
-            loop: true,
-        });
+        // this.time.addEvent({
+        //     delay: 3000,
+        //     callback: this.bombSpawner.spawn(),
+        //     callbackScope: this,
+        //     loop: true,
+        // });
     }
     createPlatforms() {
         const platforms = this.physics.add.staticGroup();
@@ -72,6 +76,26 @@ export default class GameScene extends Phaser.Scene {
         });
         return player;
     }
+    createCoin() {
+        const coin = this.physics.add.group({key: 'coin', repeat: 6, setXY: {x: 12, y: 0, stepX: 100}})
+
+        coin.children.iterate((child) => {
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        })
+        return coin;
+    }
+
+    collectCoin(player, coin) {
+        coin.disableBody(true, true)
+
+        // if(this.coin.countActive(true) === 0) {
+        //     this.coin.children.iterate((child) => {
+        //         child.enableBody(true, child.x, 0, true, true);
+        //     })
+        // }
+        this.bombSpawner.spawn(player.x);
+    }
+
     update() {
         // setInterval(this.bombSpawner.spawn(), 500000000000);
         if (this.cursors.left.isDown) {
