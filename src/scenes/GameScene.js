@@ -4,6 +4,8 @@ import BombSpawner from "./BombSpawner";
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super("game-scene");
+
+        this.gameOver = false;
     }
 
     preload() {
@@ -20,17 +22,21 @@ export default class GameScene extends Phaser.Scene {
     }
     create() {
         this.add.image(400, 300, "sky");
+
         const platforms = this.createPlatforms();
         this.player = this.createPlayer();
         const coin = this.createCoin();
+
         this.bombSpawner = new BombSpawner(this, "bomb");
         const bombGroup = this.bombSpawner.group;
+
         this.physics.add.collider(this.player, platforms);
         this.physics.add.collider(bombGroup, platforms);
+        this.physics.add.collider(this.player, bombGroup, this.hitBomb, null , this)
         this.physics.add.overlap(this.player, coin, this.collectCoin, null, this);
         this.physics.add.collider(coin, platforms)
-        this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.cursors = this.input.keyboard.createCursorKeys()
         // this.time.addEvent({
         //     delay: 3000,
         //     callback: this.bombSpawner.spawn(),
@@ -112,5 +118,17 @@ export default class GameScene extends Phaser.Scene {
         if (this.cursors.up.isDown && this.player.body.touching.down) {
             this.player.setVelocityY(-330);
         }
+        if(this.gameOver){
+          this.scene.restart();
+          this.gameOver = false
+        }
+        
+    }
+    hitBomb(player){
+        this.physics.pause();
+        player.setTint(0xff0000);
+        player.anims.play('turn');
+        this.gameOver = true;
     }
 }
+  
