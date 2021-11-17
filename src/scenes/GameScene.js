@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import BombSpawner from "./BombSpawner";
+import MovingPlatform from './MovingPlatform'
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -31,6 +32,11 @@ export default class GameScene extends Phaser.Scene {
         this.bombSpawner = new BombSpawner(this, "bomb");
         const bombGroup = this.bombSpawner.group;
 
+        // this.movingPlatform = new MovingPlatform(this, 500, 500, "platform", {
+        //     isStatic: true
+        // })
+        // this.movingPlatform.moveHorizontally();
+
         this.physics.add.collider(this.player, platforms);
         this.physics.add.collider(bombGroup, platforms);
         this.physics.add.collider(this.player, bombGroup, this.hitBomb, null , this)
@@ -38,15 +44,11 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(coin, platforms)
 
         this.cursors = this.input.keyboard.createCursorKeys()
-        // this.time.addEvent({
-        //     delay: 3000,
-        //     callback: this.bombSpawner.spawn(),
-        //     callbackScope: this,
-        //     loop: true,
-        // });
+
     }
     createPlatforms() {
         const platforms = this.physics.add.staticGroup();
+
         platforms.create(640, 785, "platform-bottom");
         platforms.create(640, 635, "platform");
         platforms.create(50, 540, "platform");
@@ -56,7 +58,7 @@ export default class GameScene extends Phaser.Scene {
         platforms.create(640, 240, "platform");
         platforms.create(1230, 340, "platform");
         platforms.create(1230, 150, "platform");
-        
+
         return platforms;
     }
     createPlayer() {
@@ -129,7 +131,7 @@ export default class GameScene extends Phaser.Scene {
           this.scene.restart();
           this.gameOver = false
         }
-        
+
     }
     hitBomb(player){
         this.physics.pause();
@@ -138,4 +140,3 @@ export default class GameScene extends Phaser.Scene {
         this.gameOver = true;
     }
 }
-  
