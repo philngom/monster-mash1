@@ -17,6 +17,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image("platform", "assets/brick-platform-400x.png");
         this.load.image("bomb", "assets/bomb.png");
         this.load.image("coin", "assets/star.png");
+        this.load.image('dungeon-door', 'assets/dungeon-door.png')
 
         this.load.spritesheet("onion", "assets/onion.png", {
             frameWidth: 32,
@@ -36,6 +37,7 @@ export default class GameScene extends Phaser.Scene {
         this.player = this.createPlayer();
         const coin = this.createCoin();
         const monster = this.createMonster();
+        const door = this.createDoor()
 
         this.bombSpawner = new BombSpawner(this, 'bomb');
         const bombGroup = this.bombSpawner.group;
@@ -56,14 +58,6 @@ export default class GameScene extends Phaser.Scene {
             null,
             this
         );
-        // this.physics.add.collider(bombGroup, platforms);
-        // this.physics.add.collider(
-        //     this.player,
-        //     bombGroup,
-        //     this.hitBomb,
-        //     null,
-        //     this
-        // );
         this.physics.add.overlap(
             this.player,
             monster,
@@ -78,6 +72,13 @@ export default class GameScene extends Phaser.Scene {
             null,
             this
         );
+        this.physics.add.overlap(
+            this.player, 
+            door, 
+            this.safelyExit, 
+            null, 
+            this
+        )
         this.physics.add.collider(coin, platforms);
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -99,6 +100,11 @@ export default class GameScene extends Phaser.Scene {
         // monster.create(640, 50, "monster");
 
         return monster;
+    }
+    createDoor(){
+        const door = this.physics.add.staticGroup();
+        door.create(1230, 98, 'dungeon-door');
+        return door
     }
 
     createPlatforms() {
@@ -250,6 +256,11 @@ export default class GameScene extends Phaser.Scene {
         this.physics.pause();
         player.setTint(0xff0000);
         player.anims.play("turn");
+        this.gameOver = true;
+    }
+    safelyExit(player) {
+        this.physics.pause();
+        player.setTint(0x00ff00);
         this.gameOver = true;
     }
 }
