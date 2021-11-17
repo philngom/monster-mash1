@@ -39,7 +39,7 @@ export default class GameScene extends Phaser.Scene {
         const monster = this.createMonster();
         const door = this.createDoor()
 
-        this.bombSpawner = new BombSpawner(this, 'bomb');
+        this.bombSpawner = new BombSpawner(this, 'fire');
         const bombGroup = this.bombSpawner.group;
 
         // this.fireBall = this.createFireBall();
