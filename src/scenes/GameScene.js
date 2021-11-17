@@ -24,6 +24,7 @@ export default class GameScene extends Phaser.Scene {
         });
     }
     create() {
+        // let monsterHitArea;
         this.add.image(640, 400, "sky");
 
         const platforms = this.createPlatforms();
@@ -48,7 +49,7 @@ export default class GameScene extends Phaser.Scene {
             null,
             this
         );
-        this.physics.add.collider(
+        this.physics.add.overlap(
             this.player,
             monster,
             this.hitBomb,
@@ -65,12 +66,22 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(coin, platforms);
 
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        // monsterHitArea = this.add.rectangle(
+        //     monster.x,
+        //     monster.y,
+        //     monster.width,
+        //     monster.height,
+        //     0x00ff00,
+        //     0.5
+        // );
     }
 
     createMonster() {
-        const monster = this.physics.add.staticGroup();
+        const monster = this.add.image(640, 50, "monster").setInteractive();
 
-        monster.create(640, 50, "monster");
+        monster.input.hitArea.setTo(35, 30, 160, 130);
+        // monster.create(640, 50, "monster");
 
         return monster;
     }
@@ -121,15 +132,54 @@ export default class GameScene extends Phaser.Scene {
         return player;
     }
     createCoin() {
-        const coin = this.physics.add.group({
-            key: "coin",
-            repeat: 6,
-            setXY: { x: 12, y: 0, stepX: 100 },
-        });
+        // const coin = this.physics.add.group({
+        //     key: "coin",
+        //     repeat: 6,
+        //     setXY: { x: 12, y: 0, stepX: 100 },
+        // });
 
-        coin.children.iterate((child) => {
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        });
+        // coin.children.iterate((child) => {
+        //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        // });
+        const coin = this.physics.add.staticGroup();
+
+        // bottom stars
+        coin.create(640, 756, "coin");
+        // coin.create(440, 756, "coin");
+        // coin.create(840, 756, "coin");
+        coin.create(1040, 756, "coin");
+        coin.create(240, 756, "coin");
+
+        // lower middle platform
+        coin.create(640, 605, "coin");
+        coin.create(800, 605, "coin");
+        coin.create(480, 605, "coin");
+
+        // middle middle platform
+        coin.create(640, 410, "coin");
+        coin.create(800, 410, "coin");
+        coin.create(480, 410, "coin");
+
+        // top middle platform
+        coin.create(640, 210, "coin");
+        coin.create(800, 210, "coin");
+        coin.create(480, 210, "coin");
+
+        // lower left platform
+        coin.create(40, 510, "coin");
+        coin.create(200, 510, "coin");
+
+        // upper left platform
+        coin.create(40, 310, "coin");
+        coin.create(200, 310, "coin");
+
+        // upper right platform
+        coin.create(1240, 310, "coin");
+        coin.create(1080, 310, "coin");
+
+        // lower right platform
+        coin.create(1240, 510, "coin");
+        coin.create(1080, 510, "coin");
         return coin;
     }
 
