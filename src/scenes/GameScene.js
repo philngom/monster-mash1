@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import BombSpawner from "./BombSpawner";
-import MovingPlatform from './MovingPlatform'
+// import MovingPlatform from './MovingPlatform'
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
