@@ -9,9 +9,10 @@ export default class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("sky", "assets/sky.png");
+        this.load.image("sky", "assets/lavaDungeon.jpg");
         // this.load.image('ground', 'assets/ground.png')
-        this.load.image("platform", "assets/platform.png");
+        this.load.image('platform-bottom', 'assets/brick-platform-bottom.png')
+        this.load.image("platform", "assets/brick-platform-400x.png");
         this.load.image("bomb", "assets/bomb.png");
         this.load.image("coin", "assets/star.png");
 
@@ -21,7 +22,7 @@ export default class GameScene extends Phaser.Scene {
         });
     }
     create() {
-        this.add.image(400, 300, "sky");
+        this.add.image(640, 400, "sky");
 
         const platforms = this.createPlatforms();
         this.player = this.createPlayer();
@@ -46,10 +47,16 @@ export default class GameScene extends Phaser.Scene {
     }
     createPlatforms() {
         const platforms = this.physics.add.staticGroup();
-        platforms.create(400, 568, "platform").setScale(2).refreshBody();
-        platforms.create(600, 400, "platform");
-        platforms.create(50, 250, "platform");
-        platforms.create(750, 220, "platform");
+        platforms.create(640, 785, "platform-bottom");
+        platforms.create(640, 635, "platform");
+        platforms.create(50, 540, "platform");
+        platforms.create(640, 440, "platform");
+        platforms.create(1230, 540, "platform");
+        platforms.create(50, 340, "platform");
+        platforms.create(640, 240, "platform");
+        platforms.create(1230, 340, "platform");
+        platforms.create(1230, 150, "platform");
+        
         return platforms;
     }
     createPlayer() {
@@ -116,7 +123,7 @@ export default class GameScene extends Phaser.Scene {
             this.player.anims.play("turn");
         }
         if (this.cursors.up.isDown && this.player.body.touching.down) {
-            this.player.setVelocityY(-330);
+            this.player.setVelocityY(-265);
         }
         if(this.gameOver){
           this.scene.restart();
