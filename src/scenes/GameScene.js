@@ -17,11 +17,17 @@ export default class GameScene extends Phaser.Scene {
         this.load.image("platform", "assets/brick-platform-400x.png");
         this.load.image("bomb", "assets/bomb.png");
         this.load.image("coin", "assets/star.png");
+        this.load.image('dungeon-door', 'assets/dungeon-door.png')
 
         this.load.spritesheet("onion", "assets/onion.png", {
             frameWidth: 32,
             frameHeight: 48,
         });
+        this.load.spritesheet('fire', 'assets/fireBullet.png', {
+            frameWidth:16, 
+            frameHeight:16
+        });
+
     }
     create() {
         // let monsterHitArea;
@@ -31,9 +37,12 @@ export default class GameScene extends Phaser.Scene {
         this.player = this.createPlayer();
         const coin = this.createCoin();
         const monster = this.createMonster();
+        const door = this.createDoor()
 
-        this.bombSpawner = new BombSpawner(this, "bomb");
+        this.bombSpawner = new BombSpawner(this, 'fire');
         const bombGroup = this.bombSpawner.group;
+
+        // this.fireBall = this.createFireBall();
 
         // this.movingPlatform = new MovingPlatform(this, 500, 500, "platform", {
         //     isStatic: true
@@ -63,6 +72,13 @@ export default class GameScene extends Phaser.Scene {
             null,
             this
         );
+        this.physics.add.overlap(
+            this.player, 
+            door, 
+            this.safelyExit, 
+            null, 
+            this
+        )
         this.physics.add.collider(coin, platforms);
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -85,6 +101,11 @@ export default class GameScene extends Phaser.Scene {
 
         return monster;
     }
+    createDoor(){
+        const door = this.physics.add.staticGroup();
+        door.create(1230, 98, 'dungeon-door');
+        return door
+    }
 
     createPlatforms() {
         const platforms = this.physics.add.staticGroup();
@@ -101,8 +122,24 @@ export default class GameScene extends Phaser.Scene {
 
         return platforms;
     }
+    createFireBall(){
+        const fireBall = this.physics.add.sprite(100, 450, "fire");
+        fireBall.setBounce(1);
+        fireBall.setCollideWorldBounds(true)
+        fireBall.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+        this.anims.create({
+            frames: this.anims.generateFrameNumbers("fire", {
+                start: 0,
+                end: 3,
+            }),
+            frameRate: 10,
+            repeat: -1,
+        });
+        return fireBall
+    }
     createPlayer() {
-        const player = this.physics.add.sprite(100, 450, "onion");
+        const player = this.physics.add.sprite(100, 700, "onion");
         player.setBounce(0.2);
         player.setCollideWorldBounds(true);
 
@@ -219,6 +256,11 @@ export default class GameScene extends Phaser.Scene {
         this.physics.pause();
         player.setTint(0xff0000);
         player.anims.play("turn");
+        this.gameOver = true;
+    }
+    safelyExit(player) {
+        this.physics.pause();
+        player.setTint(0x00ff00);
         this.gameOver = true;
     }
 }
