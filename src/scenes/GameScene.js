@@ -11,8 +11,9 @@ export default class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("sky", "assets/lavaDungeon.jpg");
+        this.load.image("monster", "assets/eyeballZombie.png");
         // this.load.image('ground', 'assets/ground.png')
-        this.load.image('platform-bottom', 'assets/brick-platform-bottom.png')
+        this.load.image("platform-bottom", "assets/brick-platform-bottom.png");
         this.load.image("platform", "assets/brick-platform-400x.png");
         this.load.image("bomb", "assets/bomb.png");
         this.load.image("coin", "assets/star.png");
@@ -28,6 +29,7 @@ export default class GameScene extends Phaser.Scene {
         const platforms = this.createPlatforms();
         this.player = this.createPlayer();
         const coin = this.createCoin();
+        const monster = this.createMonster();
 
         this.bombSpawner = new BombSpawner(this, "bomb");
         const bombGroup = this.bombSpawner.group;
@@ -39,13 +41,40 @@ export default class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player, platforms);
         this.physics.add.collider(bombGroup, platforms);
-        this.physics.add.collider(this.player, bombGroup, this.hitBomb, null , this)
-        this.physics.add.overlap(this.player, coin, this.collectCoin, null, this);
-        this.physics.add.collider(coin, platforms)
+        this.physics.add.collider(
+            this.player,
+            bombGroup,
+            this.hitBomb,
+            null,
+            this
+        );
+        this.physics.add.collider(
+            this.player,
+            monster,
+            this.hitBomb,
+            null,
+            this
+        );
+        this.physics.add.overlap(
+            this.player,
+            coin,
+            this.collectCoin,
+            null,
+            this
+        );
+        this.physics.add.collider(coin, platforms);
 
-        this.cursors = this.input.keyboard.createCursorKeys()
-
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
+
+    createMonster() {
+        const monster = this.physics.add.staticGroup();
+
+        monster.create(640, 50, "monster");
+
+        return monster;
+    }
+
     createPlatforms() {
         const platforms = this.physics.add.staticGroup();
 
@@ -92,16 +121,20 @@ export default class GameScene extends Phaser.Scene {
         return player;
     }
     createCoin() {
-        const coin = this.physics.add.group({key: 'coin', repeat: 6, setXY: {x: 12, y: 0, stepX: 100}})
+        const coin = this.physics.add.group({
+            key: "coin",
+            repeat: 6,
+            setXY: { x: 12, y: 0, stepX: 100 },
+        });
 
         coin.children.iterate((child) => {
             child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        })
+        });
         return coin;
     }
 
     collectCoin(player, coin) {
-        coin.disableBody(true, true)
+        coin.disableBody(true, true);
 
         // if(this.coin.countActive(true) === 0) {
         //     this.coin.children.iterate((child) => {
@@ -127,16 +160,15 @@ export default class GameScene extends Phaser.Scene {
         if (this.cursors.up.isDown && this.player.body.touching.down) {
             this.player.setVelocityY(-265);
         }
-        if(this.gameOver){
-          this.scene.restart();
-          this.gameOver = false
+        if (this.gameOver) {
+            this.scene.restart();
+            this.gameOver = false;
         }
-
     }
-    hitBomb(player){
+    hitBomb(player) {
         this.physics.pause();
         player.setTint(0xff0000);
-        player.anims.play('turn');
+        player.anims.play("turn");
         this.gameOver = true;
     }
 }
