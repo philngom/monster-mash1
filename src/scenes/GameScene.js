@@ -22,6 +22,11 @@ export default class GameScene extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 48,
         });
+        this.load.spritesheet('fire', 'assets/fireBullet.png', {
+            frameWidth:16, 
+            frameHeight:16
+        });
+
     }
     create() {
         // let monsterHitArea;
@@ -32,8 +37,10 @@ export default class GameScene extends Phaser.Scene {
         const coin = this.createCoin();
         const monster = this.createMonster();
 
-        this.bombSpawner = new BombSpawner(this, "bomb");
+        this.bombSpawner = new BombSpawner(this, 'bomb');
         const bombGroup = this.bombSpawner.group;
+
+        // this.fireBall = this.createFireBall();
 
         // this.movingPlatform = new MovingPlatform(this, 500, 500, "platform", {
         //     isStatic: true
@@ -49,6 +56,14 @@ export default class GameScene extends Phaser.Scene {
             null,
             this
         );
+        // this.physics.add.collider(bombGroup, platforms);
+        // this.physics.add.collider(
+        //     this.player,
+        //     bombGroup,
+        //     this.hitBomb,
+        //     null,
+        //     this
+        // );
         this.physics.add.overlap(
             this.player,
             monster,
@@ -101,8 +116,24 @@ export default class GameScene extends Phaser.Scene {
 
         return platforms;
     }
+    createFireBall(){
+        const fireBall = this.physics.add.sprite(100, 450, "fire");
+        fireBall.setBounce(1);
+        fireBall.setCollideWorldBounds(true)
+        fireBall.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+        this.anims.create({
+            frames: this.anims.generateFrameNumbers("fire", {
+                start: 0,
+                end: 3,
+            }),
+            frameRate: 10,
+            repeat: -1,
+        });
+        return fireBall
+    }
     createPlayer() {
-        const player = this.physics.add.sprite(100, 450, "onion");
+        const player = this.physics.add.sprite(100, 700, "onion");
         player.setBounce(0.2);
         player.setCollideWorldBounds(true);
 
