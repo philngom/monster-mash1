@@ -238,7 +238,7 @@ export default class GameScene extends Phaser.Scene {
     const dialogue = [
       "Failure isn't fatal, but failure to change might be",
       'Everything you want is on the other side of fear',
-      "Success is most often achieved by those who don't lnow that failure is inevitable",
+      "Success is most often achieved by those who don't know that failure is inevitable",
       'Only those who dare to fail greatly can ever achieve greatly',
       'The pheonix must burn to emerge',
       "If you're not prepared to be wrong, you'll never come up with anything original",
