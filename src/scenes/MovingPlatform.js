@@ -1,11 +1,10 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 
 export default class MovingPlatform extends Phaser.Physics.Matter.Image {
-
   constructor(scene, x, y, texture, options) {
-    super(scene.matter.world, x, y, texture, 0, options)
-    scene.add.existing(this)
-    this.setFriction(1, 0, Infinity)
+    super(scene.matter.world, x, y, texture, 0, options);
+    scene.add.existing(this);
+    this.setFriction(1, 0, Infinity);
     this.startX = x;
   }
 
@@ -18,13 +17,11 @@ export default class MovingPlatform extends Phaser.Physics.Matter.Image {
       repeat: -1,
       yoyo: true,
       onUpdate: (tween, target) => {
-        const x = this.startX + target.value
-        const dx = x - this.x
-        this.x = x
-        this.setVelocityX(dx)
-      }
-    })
+        const x = this.startX + target.value;
+        const dx = x - this.x;
+        this.x = x;
+        this.setVelocityX(dx);
+      },
+    });
   }
-
-
 }
