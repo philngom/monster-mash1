@@ -174,24 +174,6 @@ export default class GameScene extends Phaser.Scene {
         return door;
     }
 
-    createFireBall() {
-        const fireBall = this.physics.add.sprite(100, 450, "fire");
-        fireBall.setBounce(1);
-        fireBall.setCollideWorldBounds(true);
-        fireBall.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
-        this.anims.create({
-            frames: this.anims.generateFrameNumbers("fire", {
-                start: 0,
-                end: 3,
-            }),
-            frameRate: 10,
-            repeat: -1,
-        });
-
-        return fireBall;
-    }
-
     createCoin() {
         const coin = this.physics.add.staticGroup();
 
